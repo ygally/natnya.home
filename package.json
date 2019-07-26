@@ -2,7 +2,7 @@
   "name": "natnya.home",
   "version": "1.0.0",
   "description": "Nat N Ya's Home Page",
-  "main": "index.js",
+  "main": "src/main/js/index.js",
   "dependencies": {
     "express": "^4.17.1"
   },
