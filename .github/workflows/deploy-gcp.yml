@@ -1,0 +1,59 @@
+name: Deploy to Cloud Run
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'GCP Project ID'
+        required: true
+      region:
+        description: 'GCP Region'
+        required: true
+        default: 'europe-west1'
+      service:
+        description: 'Cloud Run Service name'
+        required: true
+        default: 'natya-web'
+      tag:
+        description: 'Image tag (default: commit SHA)'
+        required: false
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: ${{ github.event.inputs.project || secrets.GCP_PROJECT_ID }}
+      REGION: ${{ github.event.inputs.region || 'europe-west1' }}
+      SERVICE: ${{ github.event.inputs.service || 'natya-web' }}
+      TAG: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: 'Authenticate to Google Cloud (WIF)'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+      - name: 'Set up gcloud'
+        uses: 'google-github-actions/setup-gcloud@v2'
+      - name: Build and Push with Cloud Build
+        run: |
+          gcloud config set project ${PROJECT_ID}
+          gcloud services enable run.googleapis.com artifactregistry.googleapis.com cloudbuild.googleapis.com
+          gcloud builds submit --tag europe-docker.pkg.dev/${PROJECT_ID}/containers/natya:${TAG} .
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${SERVICE} \
+            --image europe-docker.pkg.dev/${PROJECT_ID}/containers/natya:${TAG} \
+            --region ${REGION} \
+            --allow-unauthenticated \
+            --platform managed \
+            --port 3000 \
+            --set-env-vars NEXT_TELEMETRY_DISABLED=1,NODE_ENV=production
