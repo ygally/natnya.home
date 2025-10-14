@@ -4,7 +4,10 @@ import Providers from './providers';
 
 export const metadata: Metadata = {
   title: 'Nat & Ya Solutions',
-  description: 'You have some projects, we have Solutions!'
+  description: 'You have some projects, we have Solutions!',
+  icons: {
+    icon: '/favicon.ico',
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
