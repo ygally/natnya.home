@@ -16,16 +16,21 @@ A modern Next.js + Tailwind single-page app showcasing Nat & Ya Solutions.
 - Dev server:
   - `npm install`
   - `npm run dev` -> `http://localhost:3000`
+  - **Or use:** `./scripts/dev.sh` (shows Gitpod URL automatically)
 - Production build locally:
   - `npm run build && npm start`
+  - **Or use:** `./scripts/start.sh` (shows Gitpod URL automatically)
 
 ### Docker local
 - Build image: `make build`
 - Run with compose: `make up` then open `http://localhost:3000`
+  - **Or use:** `./scripts/docker-up.sh` (shows Gitpod URL automatically)
 - Stop: `make down`
 - Logs: `make logs`
 - Clean: `make clean`
 - Note: `make` with no arguments runs `make build` by default.
+
+**Gitpod Users:** The scripts in `./scripts/` automatically detect Gitpod and display the correct HTTPS preview URL.
 
 ### GCP Deployment (Cloud Run)
 - Env vars:

@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const isDev = process.env.NODE_ENV !== 'production';
+const isGitpod = !!process.env.GITPOD_ENVIRONMENT_ID;
 
 const csp = [
   "default-src 'self'",
@@ -7,7 +8,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "connect-src 'self'" + (isGitpod ? " wss://*.gitpod.dev" : ''),
   "frame-ancestors 'none'",
 ].join('; ');
 
@@ -18,8 +19,9 @@ const securityHeaders = [
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'X-XSS-Protection', value: '0' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-  { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
-  { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
+  // Relax COOP/CORP for Gitpod compatibility
+  { key: 'Cross-Origin-Opener-Policy', value: isGitpod ? 'unsafe-none' : 'same-origin' },
+  { key: 'Cross-Origin-Resource-Policy', value: isGitpod ? 'cross-origin' : 'same-origin' },
   { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
 ];
 
