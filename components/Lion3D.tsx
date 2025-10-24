@@ -184,6 +184,16 @@ export default function Lion3D({ className = "w-full h-[200px]" }: Lion3DProps) 
     const modelViewMatrixLocation = gl.getUniformLocation(program, 'uModelViewMatrix');
     const projectionMatrixLocation = gl.getUniformLocation(program, 'uProjectionMatrix');
 
+    // Validate locations
+    if (positionLocation === -1 || colorLocation === -1) {
+      console.error('Failed to get attribute locations');
+      return;
+    }
+    if (!modelViewMatrixLocation || !projectionMatrixLocation) {
+      console.error('Failed to get uniform locations');
+      return;
+    }
+
     // Enable attributes
     gl.enableVertexAttribArray(positionLocation);
     gl.enableVertexAttribArray(colorLocation);
@@ -243,7 +253,7 @@ export default function Lion3D({ className = "w-full h-[200px]" }: Lion3DProps) 
       rotation += 0.01; // Rotation speed
 
       // Set up matrices
-      const aspect = canvas.width / canvas.height;
+      const aspect = canvas.height > 0 ? canvas.width / canvas.height : 1.0;
       const projectionMatrix = createPerspectiveMatrix(Math.PI / 4, aspect, 0.1, 100.0);
       const modelViewMatrix = createRotationMatrixY(rotation);
 
