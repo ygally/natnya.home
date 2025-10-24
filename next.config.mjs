@@ -4,7 +4,7 @@ const isGitpod = !!process.env.GITPOD_ENVIRONMENT_ID;
 
 const csp = [
   "default-src 'self'",
-  "script-src 'self'" + (isDev ? " 'unsafe-eval'" : ''),
+  "script-src 'self'" + (isDev ? " 'unsafe-eval' 'unsafe-inline'" : ''),
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self' data:",

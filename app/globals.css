@@ -26,9 +26,9 @@ body::before {
   z-index: -1;
 }
 
-/* Central 1024px framing column */
+/* Central 740px framing column */
 .frame-1024 {
-  max-width: 1024px;
+  width: 740px;
   margin-inline: auto;
   padding-inline: 1rem;
 }

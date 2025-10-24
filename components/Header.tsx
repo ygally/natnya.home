@@ -13,7 +13,6 @@ export default function Header() {
         </div>
         <nav className="hidden md:flex gap-6 text-sm text-gray-700">
           <a className="hover:text-brand-darkBlue transition-colors" href="#work">Work</a>
-          <a className="hover:text-brand-darkBlue transition-colors" href="#skills">Skills</a>
           <a className="hover:text-brand-darkBlue transition-colors" href="#play">Lab</a>
           <a className="hover:text-brand-darkBlue transition-colors" href="#contact">Contact</a>
         </nav>
