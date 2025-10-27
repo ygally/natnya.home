@@ -10,7 +10,7 @@ A modern Next.js + Tailwind single-page app showcasing Nat & Ya Solutions.
 - For GCP deployments:
   - Google Cloud SDK (`gcloud`) installed and authenticated
   - APIs enabled: `run.googleapis.com`, `artifactregistry.googleapis.com`, `cloudbuild.googleapis.com`
-  - A Docker Artifact Registry repo (created by `make gcp:repo`)
+  - A Docker Artifact Registry repo (created by `make gcp-repo`)
 
 ### Install and run
 - Dev server:
@@ -33,20 +33,17 @@ A modern Next.js + Tailwind single-page app showcasing Nat & Ya Solutions.
 **Gitpod Users:** The scripts in `./scripts/` automatically detect Gitpod and display the correct HTTPS preview URL.
 
 ### GCP Deployment (Cloud Run)
-- Env vars:
-  - `GCP_PROJECT` (required)
-  - Optional: `GCP_REGION` (default `europe-west1`), `SERVICE_NAME` (default `natya-web`)
-- Initial setup:
-  - `make gcp:auth`
-  - `make gcp:enable`
-  - `make gcp:repo`
+- Default settings: `GCP_PROJECT=home-natnya-fr-20180707`, `GCP_REGION=europe-west1`
+- Override: `make gcp-init GCP_PROJECT=your-project-id`
+- Initial setup (all-in-one):
+  - `make gcp-init` (auth, enable APIs, create repo, grant permissions)
 - Deploy via Cloud Build (recommended):
-  - `make gcp:cb:build` (builds and pushes `europe-docker.pkg.dev/$GCP_PROJECT/containers/natya:$TAG`)
-  - `make gcp:deploy`
+  - `make gcp-cb-build` (builds and pushes `$(GCP_REGION)-docker.pkg.dev/$GCP_PROJECT/containers/natya:$TAG`)
+  - `make gcp-deploy`
 - Manual path (build locally then push):
-  - `make gcp:login`
-  - `make gcp:build:push`
-  - `make gcp:deploy`
+  - `make gcp-login`
+  - `make gcp-build-push`
+  - `make gcp-deploy`
 
 ### CI/CD (GitHub Actions)
 - Security checks: `.github/workflows/security.yml`
@@ -79,13 +76,17 @@ make up              # run compose
 make down            # stop compose
 make logs            # tail logs
 make clean           # remove containers/images
-make gcp:auth        # gcloud auth and set project
-make gcp:enable      # enable GCP APIs
-make gcp:repo        # create Artifact Registry repo
-make gcp:cb:build    # build with Cloud Build and push
-make gcp:login       # docker login to AR
-make gcp:build:push  # build locally and push
-make gcp:deploy      # deploy to Cloud Run
+make gcp-init        # initialize GCP (auth, APIs, repo, permissions) - recommended!
+make gcp-cb-build    # build with Cloud Build and push
+make gcp-deploy      # deploy to Cloud Run
+
+# Individual GCP targets (if needed):
+make gcp-auth        # gcloud auth and set project
+make gcp-enable      # enable GCP APIs
+make gcp-repo        # create Artifact Registry repo
+make gcp-permissions # grant Cloud Build permission to push
+make gcp-login       # docker login to AR
+make gcp-build-push  # build locally and push
 ```
 
 ### Notes

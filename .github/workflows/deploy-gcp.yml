@@ -47,11 +47,11 @@ jobs:
         run: |
           gcloud config set project ${PROJECT_ID}
           gcloud services enable run.googleapis.com artifactregistry.googleapis.com cloudbuild.googleapis.com
-          gcloud builds submit --tag europe-docker.pkg.dev/${PROJECT_ID}/containers/natya:${TAG} .
+          gcloud builds submit --tag ${REGION}-docker.pkg.dev/${PROJECT_ID}/containers/natya:${TAG} .
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${SERVICE} \
-            --image europe-docker.pkg.dev/${PROJECT_ID}/containers/natya:${TAG} \
+            --image ${REGION}-docker.pkg.dev/${PROJECT_ID}/containers/natya:${TAG} \
             --region ${REGION} \
             --allow-unauthenticated \
             --platform managed \
