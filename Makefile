@@ -92,6 +92,45 @@ gcp-deploy: ## Deploy Cloud Run service
 	  --port 3000 \
 	  --set-env-vars NEXT_TELEMETRY_DISABLED=1,NODE_ENV=production
 
+# Custom domain mapping
+DOMAIN_NAME ?= solutions.natnya.fr
+.PHONY: gcp-domain-map
+gcp-domain-map: ## Map custom domain to Cloud Run service
+	@test -n "$(GCP_PROJECT)" || (echo "Set GCP_PROJECT env var" && exit 1)
+	@echo "Creating domain mapping for $(DOMAIN_NAME)..."
+	@gcloud beta run domain-mappings create \
+		--service $(SERVICE_NAME) \
+		--domain $(DOMAIN_NAME) \
+		--region $(GCP_REGION) || echo "Domain mapping may already exist"
+	@echo ""
+	@echo "Next steps:"
+	@echo "1. Add the DNS records shown above to your DNS provider"
+	@echo "2. Wait for DNS propagation and SSL certificate (5-30 minutes)"
+	@echo "3. Use 'make gcp-domain-status' to check the mapping status"
+
+.PHONY: gcp-domain-status
+gcp-domain-status: ## Check custom domain mapping status
+	@test -n "$(GCP_PROJECT)" || (echo "Set GCP_PROJECT env var" && exit 1)
+	@echo "Current domain mappings in region $(GCP_REGION):"
+	@gcloud beta run domain-mappings list --region $(GCP_REGION)
+
+.PHONY: gcp-domain-list
+gcp-domain-list: ## List all domain mappings
+	@test -n "$(GCP_PROJECT)" || (echo "Set GCP_PROJECT env var" && exit 1)
+	@gcloud beta run domain-mappings list --region $(GCP_REGION)
+
+.PHONY: gcp-domain-info
+gcp-domain-info: ## Get detailed domain mapping info for DNS setup
+	@test -n "$(GCP_PROJECT)" || (echo "Set GCP_PROJECT env var" && exit 1)
+	@echo "=== Domain Mapping Information ==="
+	@echo ""
+	@echo "Getting DNS records for $(DOMAIN_NAME)..."
+	@gcloud beta run domain-mappings describe --domain $(DOMAIN_NAME) --region $(GCP_REGION) \
+		--format="yaml(status.resourceRecords)" || \
+		(echo "Domain mapping might not exist yet. Create it with: make gcp-domain-map" && exit 1)
+	@echo ""
+	@echo "Add these DNS records to your domain provider (natnya.fr)"
+
 # Build locally and push to Artifact Registry (manual path)
 .PHONY: gcp-login
 gcp-login: ## Docker login to Artifact Registry

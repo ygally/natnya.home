@@ -40,6 +40,10 @@ A modern Next.js + Tailwind single-page app showcasing Nat & Ya Solutions.
 - Deploy via Cloud Build (recommended):
   - `make gcp-cb-build` (builds and pushes `$(GCP_REGION)-docker.pkg.dev/$GCP_PROJECT/containers/natya:$TAG`)
   - `make gcp-deploy`
+- Custom domain (optional):
+  - `make gcp-domain-map` to map solutions.natnya.fr (override with `DOMAIN_NAME=your.domain`)
+  - `make gcp-domain-info` to get DNS records to add to your domain provider
+  - `make gcp-domain-status` to check mapping status
 - Manual path (build locally then push):
   - `make gcp-login`
   - `make gcp-build-push`
@@ -79,6 +83,9 @@ make clean           # remove containers/images
 make gcp-init        # initialize GCP (auth, APIs, repo, permissions) - recommended!
 make gcp-cb-build    # build with Cloud Build and push
 make gcp-deploy      # deploy to Cloud Run
+make gcp-domain-map  # map custom domain to Cloud Run service
+make gcp-domain-info # get DNS records for domain setup
+make gcp-domain-status # check domain mapping status
 
 # Individual GCP targets (if needed):
 make gcp-auth        # gcloud auth and set project
