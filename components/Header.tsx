@@ -1,8 +1,14 @@
 import BrandMark from './BrandMark';
+import Lion3D from './Lion3D';
 
 export default function Header() {
   return (
     <header className="frame-1024 py-6">
+      {/* 3D Lion Animation */}
+      <div className="flex justify-center mb-6">
+        <Lion3D className="w-full max-w-md h-[200px]" />
+      </div>
+      
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <BrandMark />
